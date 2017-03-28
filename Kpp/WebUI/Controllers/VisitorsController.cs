@@ -105,7 +105,7 @@ namespace WebUI.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Visitor visitor = db.GetVisitor(id);
-            db.Delete(id);
+            db.Delete(visitor.VisitorId);
             db.Save();
             return RedirectToAction("Index");
         }
