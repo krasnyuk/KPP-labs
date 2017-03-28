@@ -8,27 +8,29 @@ using System.Web;
 using System.Web.Mvc;
 using DAL;
 using DAL.Entities;
+using DAL.Repository.Interface;
 
 namespace WebUI.Controllers
 {
     public class VisitorsController : Controller
     {
-        private KppContext db = new KppContext();
+        private IVisitorRepository db;
+
+        public VisitorsController(IVisitorRepository repository)
+        {
+            db = repository;
+        }
 
         // GET: Visitors
         public ActionResult Index()
         {
-            return View(db.Visitors.ToList());
+            return View(db.GetVisitorsList());
         }
 
         // GET: Visitors/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Visitor visitor = db.Visitors.Find(id);
+            Visitor visitor = db.GetVisitor(id);
             if (visitor == null)
             {
                 return HttpNotFound();
@@ -51,8 +53,8 @@ namespace WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Visitors.Add(visitor);
-                db.SaveChanges();
+                db.Create(visitor);
+                db.Save();
                 return RedirectToAction("Index");
             }
 
@@ -60,13 +62,9 @@ namespace WebUI.Controllers
         }
 
         // GET: Visitors/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Visitor visitor = db.Visitors.Find(id);
+            Visitor visitor = db.GetVisitor(id);
             if (visitor == null)
             {
                 return HttpNotFound();
@@ -83,21 +81,17 @@ namespace WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(visitor).State = EntityState.Modified;
-                db.SaveChanges();
+                db.Update(visitor);
+                db.Save();
                 return RedirectToAction("Index");
             }
             return View(visitor);
         }
 
         // GET: Visitors/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Visitor visitor = db.Visitors.Find(id);
+            Visitor visitor = db.GetVisitor(id);
             if (visitor == null)
             {
                 return HttpNotFound();
@@ -110,9 +104,9 @@ namespace WebUI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Visitor visitor = db.Visitors.Find(id);
-            db.Visitors.Remove(visitor);
-            db.SaveChanges();
+            Visitor visitor = db.GetVisitor(id);
+            db.Delete(id);
+            db.Save();
             return RedirectToAction("Index");
         }
 
@@ -120,7 +114,7 @@ namespace WebUI.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+               // db.Dispose();
             }
             base.Dispose(disposing);
         }

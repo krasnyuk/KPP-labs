@@ -9,7 +9,7 @@ using DAL.Repository.Interface;
 
 namespace DAL.Repository.Implementation
 {
-    class VisitorRepository: IVisitorRepository
+    public class VisitorRepository: IVisitorRepository
     {
         private KppContext db;
 
