@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.Entities;
 
 namespace DAL
 {
@@ -10,8 +11,9 @@ namespace DAL
     {
         protected override void Seed(KppContext context)
         {
-            var students = new List<Visitor>
+            var visitors = new List<Visitor>
             {
+              
                 new Visitor(){
                     LastName = "Krasnyuk",
                     FirstName = "Artyom",
@@ -22,7 +24,7 @@ namespace DAL
                     Feedback = "Good!"}
             };
 
-            students.ForEach(s => context.Visitors.Add(s));
+            visitors.ForEach(s => context.Visitors.Add(s));
             context.SaveChanges();
         }
     }
